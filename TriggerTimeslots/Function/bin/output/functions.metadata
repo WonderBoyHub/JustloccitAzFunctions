@@ -1,0 +1,42 @@
+[
+  {
+    "name": "TriggerDeleteTimeslotsByDate",
+    "scriptFile": "Function.dll",
+    "entryPoint": "Justloccit.Function.TriggerDeleteTimeslotsByDate.Run",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timerInfo",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 5 0 * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "TriggerTimeslotsReservation",
+    "scriptFile": "Function.dll",
+    "entryPoint": "Justloccit.Function.TriggerTimeslotsReservation.Run",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "reservations",
+        "direction": "In",
+        "type": "cosmosDBTrigger",
+        "databaseName": "CosmosDb:ReservationsDatabase",
+        "containerName": "CosmosDb:ReservationsContainer",
+        "connection": "CosmosDb:ConnectionString",
+        "leaseContainerName": "leases",
+        "createLeaseContainerIfNotExists": true,
+        "properties": {}
+      }
+    ]
+  }
+]

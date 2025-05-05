@@ -1,0 +1,29 @@
+[
+  {
+    "name": "UpdateTimeslotsByDate",
+    "scriptFile": "Function.dll",
+    "entryPoint": "Justloccit.Function.UpdateTimeslotsByDate.Run",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "req",
+        "direction": "In",
+        "type": "httpTrigger",
+        "authLevel": "Function",
+        "methods": [
+          "put"
+        ],
+        "route": "timeslots/{date}",
+        "properties": {}
+      },
+      {
+        "name": "$return",
+        "type": "http",
+        "direction": "Out"
+      }
+    ]
+  }
+]
