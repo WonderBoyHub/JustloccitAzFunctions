@@ -64,7 +64,8 @@ jobs:
           auth-type: IDENTITY
           client-id: ${{ secrets.MSI_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          allow-no-subscriptions: true
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          # allow-no-subscriptions: true
 
       - name: Build Function
         run: |
