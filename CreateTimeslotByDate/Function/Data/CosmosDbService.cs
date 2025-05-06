@@ -7,7 +7,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Justloccit.Services
+namespace Justloccit.Data
 {
     public interface ICosmosDbService
     {
