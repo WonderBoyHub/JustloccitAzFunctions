@@ -52,11 +52,11 @@ namespace Justloccit.Data
             }
         }
 
-        public async Task<TimeslotDocument> CreateTimeslotAsync(TimeslotDocument document)
+        public async Task<TimeslotDocument> CreateTimeslotAsync(TimeslotDocument document, string partitionKey)
         {
             try
             {
-                var response = await _timeslotsContainer.CreateItemAsync(document, new PartitionKey(document.PartitionKey));
+                var response = await _timeslotsContainer.CreateItemAsync(document, new PartitionKey(partitionKey));
                 return response.Resource;
             }
             catch (Exception ex)
