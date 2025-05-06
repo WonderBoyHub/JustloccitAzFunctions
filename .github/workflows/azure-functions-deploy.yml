@@ -1,0 +1,116 @@
+name: Deploy Justloccit Azure Functions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*/Function/**'
+      - '.github/workflows/azure-functions-deploy.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options: [dev, test, prod]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  FUNCTIONS_CORE_TOOLS_VERSION: '4.x'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    strategy:
+      fail-fast: false
+      matrix:
+        function:
+          - CreateTimeslotsByDate
+          - GetTimeslotsByDate
+          - UpdateTimeslotsByDate
+          - DeleteTimeslotsByDate
+          - TriggerDeleteTimeslotsByDate
+          - TriggerTimeslotsReservation
+          - ConfirmBookingAsync
+          - GetAllServicesWithSubServices
+          - Reservations
+          - LockReservation
+          - ReleaseReservation
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Azure Functions Core Tools
+        run: npm install -g azure-functions-core-tools@${{ env.FUNCTIONS_CORE_TOOLS_VERSION }}
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: false
+          environment: azure
+
+      - name: Build Function
+        run: |
+          cd ${{ matrix.function }}/Function
+          dotnet restore
+          dotnet build --configuration Release --output ./output
+
+      - name: Security Scan
+        uses: microsoft/security-devops-action@v1
+        id: msdo
+        with:
+          categories: code
+          tools: credscan,eslint
+
+      - name: Map Publish Profile Secret
+        id: map_secret
+        run: |
+          case "${{ matrix.function }}" in
+            CreateTimeslotsByDate)         echo "secret=${{ secrets.PUBLISH_PROFILE_CreateTimeslotsByDate }}" ;;  
+            GetTimeslotsByDate)            echo "secret=${{ secrets.PUBLISH_PROFILE_GetTimeslotsByDate }}" ;;  
+            UpdateTimeslotsByDate)         echo "secret=${{ secrets.PUBLISH_PROFILE_UpdateTimeslotsByDate }}" ;;  
+            DeleteTimeslotsByDate)         echo "secret=${{ secrets.PUBLISH_PROFILE_DeleteTimeslotsByDate }}" ;;  
+            TriggerDeleteTimeslotsByDate)  echo "secret=${{ secrets.PUBLISH_PROFILE_TriggerDeleteTimeslotsByDate }}" ;;  
+            TriggerTimeslotsReservation)   echo "secret=${{ secrets.PUBLISH_PROFILE_TriggerTimeslotsReservation }}" ;;  
+            ConfirmBookingAsync)           echo "secret=${{ secrets.PUBLISH_PROFILE_ConfirmBookingAsync }}" ;;  
+            GetAllServicesWithSubServices)  echo "secret=${{ secrets.PUBLISH_PROFILE_GetAllServicesWithSubServices }}" ;;  
+            Reservations)                  echo "secret=${{ secrets.PUBLISH_PROFILE_Reservations }}" ;;  
+            LockReservation)               echo "secret=${{ secrets.PUBLISH_PROFILE_LockReservation }}" ;;  
+            ReleaseReservation)            echo "secret=${{ secrets.PUBLISH_PROFILE_ReleaseReservation }}" ;;  
+          esac >> $GITHUB_OUTPUT
+
+      - name: Deploy Function
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ matrix.function }}
+          package: ${{ matrix.function }}/Function/output
+          publish-profile: ${{ steps.map_secret.outputs.secret }}
+          respect-funcignore: true
+
+      - name: Configure Security
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az functionapp config set \
+              --name ${{ matrix.function }} \
+              --resource-group justloccit-rg \
+              --ftps-state Disabled \
+              --http20-enabled true \
+              --min-tls-version 1.2 \
+              --remote-debugging-enabled false
+
+      - name: Show Function URL
+        run: echo "Function App URL: https://${{ matrix.function }}.azurewebsites.net"
