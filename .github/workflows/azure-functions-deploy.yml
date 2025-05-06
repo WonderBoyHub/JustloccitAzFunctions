@@ -58,7 +58,7 @@ jobs:
       - name: Install Azure Functions Core Tools
         run: npm install -g azure-functions-core-tools@${{ env.FUNCTIONS_CORE_TOOLS_VERSION }}
 
-      - name: Azure login (system-assigned MI)
+      - name: Azure login (system-assigned MI) 
         uses: azure/login@v2
         with:
           auth-type: IDENTITY
