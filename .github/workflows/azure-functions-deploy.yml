@@ -42,7 +42,6 @@ jobs:
           - TriggerTimeslotsReservation
           - ConfirmBookingAsync
           - GetAllServicesWithSubServices
-          - Reservations
           - LockReservation
           - ReleaseReservation
 
@@ -60,7 +59,15 @@ jobs:
 
       - name: Build Function
         run: |
-          cd ${{ matrix.function }}/Function
+          if [[ "${{ matrix.function }}" == "TriggerTimeslotsReservation" || "${{ matrix.function }}" == "TriggerDeleteTimeslotsByDate" ]]; then
+            cd TriggerTimeslots/Function
+          elif [[ "${{ matrix.function }}" == "LockReservation" || "${{ matrix.function }}" == "ReleaseReservation" ]]; then
+            cd LockAndRelease/Function
+          elif [[ "${{ matrix.function }}" == "CreateTimeslotsByDate" ]]; then
+            cd CreateTimeslotByDate/Function
+          else
+            cd ${{ matrix.function }}/Function
+          fi
           dotnet restore
           dotnet build --configuration Release --output ./output
 
@@ -76,16 +83,28 @@ jobs:
             TriggerTimeslotsReservation)   echo "secret=${{ secrets.PUBLISH_PROFILE_TriggerTimeslotsReservation }}" ;;  
             ConfirmBookingAsync)           echo "secret=${{ secrets.PUBLISH_PROFILE_ConfirmBookingAsync }}" ;;  
             GetAllServicesWithSubServices)  echo "secret=${{ secrets.PUBLISH_PROFILE_GetAllServicesWithSubServices }}" ;;  
-            Reservations)                  echo "secret=${{ secrets.PUBLISH_PROFILE_Reservations }}" ;;  
             LockReservation)               echo "secret=${{ secrets.PUBLISH_PROFILE_LockReservation }}" ;;  
             ReleaseReservation)            echo "secret=${{ secrets.PUBLISH_PROFILE_ReleaseReservation }}" ;;  
           esac >> $GITHUB_OUTPUT
+
+      - name: Set Output Path
+        id: set_path
+        run: |
+          if [[ "${{ matrix.function }}" == "TriggerTimeslotsReservation" || "${{ matrix.function }}" == "TriggerDeleteTimeslotsByDate" ]]; then
+            echo "package_path=TriggerTimeslots/Function/output" >> $GITHUB_OUTPUT
+          elif [[ "${{ matrix.function }}" == "LockReservation" || "${{ matrix.function }}" == "ReleaseReservation" ]]; then
+            echo "package_path=LockAndRelease/Function/output" >> $GITHUB_OUTPUT
+          elif [[ "${{ matrix.function }}" == "CreateTimeslotsByDate" ]]; then
+            echo "package_path=CreateTimeslotByDate/Function/output" >> $GITHUB_OUTPUT
+          else
+            echo "package_path=${{ matrix.function }}/Function/output" >> $GITHUB_OUTPUT
+          fi
 
       - name: Deploy Function
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ matrix.function }}
-          package: ${{ matrix.function }}/Function/output
+          package: ${{ steps.set_path.outputs.package_path }}
           publish-profile: ${{ steps.map_secret.outputs.secret }}
           respect-funcignore: true
 
