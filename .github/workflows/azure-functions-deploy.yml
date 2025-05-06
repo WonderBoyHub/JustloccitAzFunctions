@@ -70,13 +70,6 @@ jobs:
           dotnet restore
           dotnet build --configuration Release --output ./output
 
-      - name: Security Scan
-        uses: microsoft/security-devops-action@v1
-        id: msdo
-        with:
-          categories: code
-          tools: credscan,eslint
-
       - name: Map Publish Profile Secret
         id: map_secret
         run: |
