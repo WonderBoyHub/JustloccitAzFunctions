@@ -23,10 +23,12 @@ jobs:
           - { dir: GetTimeslotsByDate/Function,                app_name: GetTimeslotsByDate,                publish_profile_secret: PP_GetTimeslotsByDate }
           - { dir: UpdateTimeslotsByDate/Function,             app_name: UpdateTimeslotsByDate,             publish_profile_secret: PP_UpdateTimeslotsByDate }
           - { dir: DeleteTimeslotsByDate/Function,             app_name: DeleteTimeslotsByDate,             publish_profile_secret: PP_DeleteTimeslotsByDate }
-          - { dir: TriggerTimeslots/Function,                  app_name: TriggerTimeslots,                  publish_profile_secret: PP_TriggerTimeslots }
+          - { dir: TriggerTimeslots/Function,                  app_name: TriggerDeleteTimeslotsByDate,      publish_profile_secret: PP_TriggerDeleteTimeslotsByDate }
+          - { dir: TriggerTimeslots/Function,                  app_name: TriggerTimeslotsReservation,       publish_profile_secret: PP_TriggerTimeslotsReservation }
           - { dir: ConfirmBookingAsync/Function,               app_name: ConfirmBookingAsync,               publish_profile_secret: PP_ConfirmBookingAsync }
           - { dir: GetAllServicesWithSubServices/Function,     app_name: GetAllServicesWithSubServices,     publish_profile_secret: PP_GetAllServicesWithSubServices }
-          - { dir: LockAndRelease/Function,                    app_name: LockAndRelease,                    publish_profile_secret: PP_LockAndRelease }
+          - { dir: LockAndRelease/Function,                    app_name: LockReservation,                  publish_profile_secret: PP_LockReservation }
+          - { dir: LockAndRelease/Function,                    app_name: ReleaseReservation,               publish_profile_secret: PP_ReleaseReservation }
 
     steps:
       - name: Checkout repository
