@@ -63,7 +63,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: false
-          environment: azure
 
       - name: Build Function
         run: |
