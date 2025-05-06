@@ -13,7 +13,10 @@ on:
         required: true
         default: 'dev'
         type: choice
-        options: [dev, test, prod]
+        options:
+          - dev
+          - test
+          - prod
 
 permissions:
   id-token: write
@@ -113,4 +116,4 @@ jobs:
               --remote-debugging-enabled false
 
       - name: Show Function URL
-        run: echo "Function App URL: https://${{ matrix.function }}.azurewebsites.net"
+        run: 'echo "Function App URL: https://${{ matrix.function }}.azurewebsites.net"'
