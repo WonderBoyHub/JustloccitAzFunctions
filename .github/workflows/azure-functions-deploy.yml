@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
           #   ── dir (project path) ──          app_name (Azure)            secret key holding publish profile
-          - { dir: CreateTimeslotsByDate/Function,             app_name: CreateTimeslotsByDate,             publish_profile_secret: PP_CreateTimeslotsByDate }
+          - { dir: CreateTimeslotByDate/Function,             app_name: CreateTimeslotsByDate,             publish_profile_secret: PP_CreateTimeslotsByDate }
           - { dir: GetTimeslotsByDate/Function,                app_name: GetTimeslotsByDate,                publish_profile_secret: PP_GetTimeslotsByDate }
           - { dir: UpdateTimeslotsByDate/Function,             app_name: UpdateTimeslotsByDate,             publish_profile_secret: PP_UpdateTimeslotsByDate }
           - { dir: DeleteTimeslotsByDate/Function,             app_name: DeleteTimeslotsByDate,             publish_profile_secret: PP_DeleteTimeslotsByDate }
