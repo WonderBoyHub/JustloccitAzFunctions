@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CreateTimeslotsByDate.Function")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e763a0edef19be3a33485685dcff97fd4911b0a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d05773aa5998ddab8beb3086b5f29f883d9cd51")]
 [assembly: System.Reflection.AssemblyProductAttribute("CreateTimeslotsByDate.Function")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CreateTimeslotsByDate.Function")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

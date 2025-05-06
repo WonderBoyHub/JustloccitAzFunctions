@@ -49,4 +49,5 @@ jobs:
           app-name: ${{ matrix.app_name }}
           package: publish
           publish-profile: ${{ secrets[matrix.publish_profile_secret] }}
+          sku: flexconsumption
           respect-funcignore: true
