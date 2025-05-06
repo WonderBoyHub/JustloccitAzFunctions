@@ -12,7 +12,7 @@ namespace Justloccit.Data
     public interface ICosmosDbService
     {
         Task<TimeslotDocument?> GetTimeslotAsync(string id, string partitionKey);
-        Task<TimeslotDocument> CreateTimeslotAsync(TimeslotDocument document);
+        Task<TimeslotDocument> CreateTimeslotAsync(TimeslotDocument document, string partitionKey);
         Task<TimeslotDocument> UpdateTimeslotAsync(TimeslotDocument document);
         Task DeleteTimeslotAsync(string id, string partitionKey);
         Task<IEnumerable<TimeslotDocument>> GetTimeslotsBeforeDateAsync(string date);
