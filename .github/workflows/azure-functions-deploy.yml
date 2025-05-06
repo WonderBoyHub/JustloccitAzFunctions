@@ -58,13 +58,11 @@ jobs:
       - name: Install Azure Functions Core Tools
         run: npm install -g azure-functions-core-tools@${{ env.FUNCTIONS_CORE_TOOLS_VERSION }}
 
-      - name: Azure login (user assigned MI)
+      - name: Azure login with service principal
         uses: azure/login@v2
         with:
-          auth-type: IDENTITY
-          client-id: ${{ secrets.MSI_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: false
 
       - name: Build Function
         run: |
