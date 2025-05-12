@@ -21,7 +21,7 @@ namespace GetBookingsByDateRange.Function.Data
             _logger = logger;
             _cosmosClient = cosmosClient;
 
-            var bookingsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitBookings"]!);
+            var bookingsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:BookingsDatabase"]!);
             var bookingsContainer = bookingsDatabase.GetContainer(configuration["CosmosDb:BookingsContainer"]!);
 
             _containers = new Dictionary<string, Container>

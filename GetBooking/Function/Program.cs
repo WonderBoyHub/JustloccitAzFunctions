@@ -14,10 +14,10 @@ builder.ConfigureFunctionsWebApplication();
 // Register CosmosClient as a singleton
 builder.Services.AddSingleton(sp => 
 {
-    var connectionString = builder.Configuration["CosmosDBConnectionString"];
+    var connectionString = builder.Configuration["CosmosDb:ConnectionString"];
     if (string.IsNullOrEmpty(connectionString))
     {
-        throw new InvalidOperationException("CosmosDB connection string is not configured. Please add 'CosmosDBConnectionString' to the configuration.");
+        throw new InvalidOperationException("CosmosDB connection string is not configured. Please add 'CosmosDb:ConnectionString' to the configuration.");
     }
     return new CosmosClient(connectionString);
 });

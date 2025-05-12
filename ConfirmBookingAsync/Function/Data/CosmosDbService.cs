@@ -25,11 +25,11 @@ namespace ConfirmBookingAsync.Function.Data
                 _logger = logger;
                 _cosmosClient = cosmosClient;
 
-                var timeslotsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitBookings"]!);
-                _timeslotsContainer = timeslotsDatabase.GetContainer(configuration["CosmosDb:BookingsContainer"]!);
-                var customersDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitCustomers"]!);
+                var bookingsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:BookingsDatabase"]!);
+                _timeslotsContainer = bookingsDatabase.GetContainer(configuration["CosmosDb:BookingsContainer"]!);
+                var customersDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:CustomersDatabase"]!);
                 _customersContainer = customersDatabase.GetContainer(configuration["CosmosDb:CustomersContainer"]!);
-                var reservationsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitReservations"]!);
+                var reservationsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:ReservationsDatabase"]!);
                 _reservationsContainer = reservationsDatabase.GetContainer(configuration["CosmosDb:ReservationsContainer"]!);
                 _containers = new Dictionary<string, Container>
                 {
@@ -40,7 +40,7 @@ namespace ConfirmBookingAsync.Function.Data
                 _logger.LogInformation("CosmosDbService initialized with containers: {Containers}", string.Join(", ", _containers.Keys));
                 _databases = new Dictionary<string, Database>
                 {
-                    { "Bookings", timeslotsDatabase },
+                    { "Bookings", bookingsDatabase },
                     { "Customers", customersDatabase },
                     { "Reservations", reservationsDatabase }
                 };

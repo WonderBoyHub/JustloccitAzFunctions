@@ -31,12 +31,12 @@ namespace GetAllServicesWithSubServices.Function.Data
         {
             try
             {
-                var servicesDatabase = _configuration["CosmosDb:ServicesDatabase"]!;
+                var servicesDatabase = _configuration["CosmosDb:ServiceDB"]!;
                 
                 var databases = new[]
                 {
-                    new { Database = servicesDatabase, Container = "ServicesContainer" },
-                    new { Database = servicesDatabase, Container = "SubServicesContainer" }
+                    new { Database = servicesDatabase, Container = _configuration["CosmosDb:Services"]! },
+                    new { Database = servicesDatabase, Container = _configuration["CosmosDb:Subservices"]! }
                 };
 
                 foreach (var db in databases)

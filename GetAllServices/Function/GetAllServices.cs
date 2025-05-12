@@ -24,7 +24,7 @@ namespace Justloccit.Function
             _cosmosClient = cosmosClient;
             
             var servicesDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:ServicesDatabase"]);
-            _servicesContainer = servicesDatabase.GetContainer("ServicesContainer");
+            _servicesContainer = servicesDatabase.GetContainer(configuration["CosmosDb:ServicesContainer"]);
         }
 
         [Function("GetAllServices")]

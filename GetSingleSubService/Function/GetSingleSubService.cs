@@ -23,7 +23,7 @@ namespace Justloccit.Function
             _cosmosClient = cosmosClient;
             
             var servicesDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:ServicesDatabase"]);
-            _subServicesContainer = servicesDatabase.GetContainer("SubServicesContainer");
+            _subServicesContainer = servicesDatabase.GetContainer(configuration["CosmosDb:SubServicesContainer"]);
         }
 
         [Function("GetSingleSubService")]

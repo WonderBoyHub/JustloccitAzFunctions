@@ -21,11 +21,11 @@ namespace CreateBooking.Function.Data
             _logger = logger;
             _cosmosClient = cosmosClient;
 
-            var bookingsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitBookings"]!);
+            var bookingsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:BookingsDatabase"]!);
             var bookingsContainer = bookingsDatabase.GetContainer(configuration["CosmosDb:BookingsContainer"]!);
-            var customersDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitCustomers"]!);
+            var customersDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:CustomersDatabase"]!);
             var customersContainer = customersDatabase.GetContainer(configuration["CosmosDb:CustomersContainer"]!);
-            var servicesDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:JustloccitServices"]!);
+            var servicesDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:ServicesDatabase"]!);
             var servicesContainer = servicesDatabase.GetContainer(configuration["CosmosDb:ServicesContainer"]!);
             var subServicesContainer = servicesDatabase.GetContainer(configuration["CosmosDb:SubServicesContainer"]!);
 

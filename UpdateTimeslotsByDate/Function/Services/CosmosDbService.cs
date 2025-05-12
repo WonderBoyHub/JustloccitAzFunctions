@@ -30,8 +30,8 @@ namespace Justloccit.Services
         {
             _logger = logger;
 
-            var timeslotsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:TimeslotsDatabase"] ?? "IdaBroTimeslots");
-            _timeslotsContainer = timeslotsDatabase.GetContainer(configuration["CosmosDb:TimeslotsContainer"] ?? "TimeslotsContainer");
+            var timeslotsDatabase = cosmosClient.GetDatabase(configuration["CosmosDb:TimeslotsDatabase"]!);
+            _timeslotsContainer = timeslotsDatabase.GetContainer(configuration["CosmosDb:TimeslotsContainer"]!);
         }
 
         public async Task<TimeslotDocument?> GetTimeslotAsync(string id, string partitionKey)

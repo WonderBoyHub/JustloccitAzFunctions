@@ -11,11 +11,11 @@ builder.ConfigureFunctionsWebApplication();
 // Register Azure Communication Email client
 builder.Services.AddSingleton(sp =>
 {
-    var connectionString = Environment.GetEnvironmentVariable("AzureCommunicationServicesConnectionString");
+    var connectionString = builder.Configuration["AzureCommunication:ConnectionString"];
     if (string.IsNullOrEmpty(connectionString))
     {
         throw new InvalidOperationException("Azure Communication Services connection string is not configured. " +
-                                           "Please add 'AzureCommunicationServicesConnectionString' to the configuration.");
+                                           "Please add 'AzureCommunication:ConnectionString' to the configuration.");
     }
     return new EmailClient(connectionString);
 });
