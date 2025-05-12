@@ -1,0 +1,76 @@
+name: Deploy Azure Functions (publish‑profiles)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/Function/**/**'
+      - '.github/workflows/all/azure-functions-deploy.yml'
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '9.0.x'  # adjust to your LTS
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        include:
+          #   ── dir (project path) ──          app_name (Azure)            secret key holding publish profile
+          - { dir: CreateTimeslotByDate/Function,              app_name: CreateTimeslotsByDate,             publish_profile_secret: PP_CreateTimeslotsByDate }
+          - { dir: GetTimeslotsByDate/Function,                app_name: GetTimeslotsByDate,                publish_profile_secret: PP_GetTimeslotsByDate }
+          - { dir: UpdateTimeslotsByDate/Function,             app_name: UpdateTimeslotsByDate,             publish_profile_secret: PP_UpdateTimeslotsByDate }
+          - { dir: DeleteTimeslotsByDate/Function,             app_name: DeleteTimeslotsByDate,             publish_profile_secret: PP_DeleteTimeslotsByDate }
+          - { dir: TriggerTimeslots/Function,                  app_name: TriggerTimeslots,                  publish_profile_secret: PP_TriggerTimeslots }
+          - { dir: ConfirmBookingAsync/Function,               app_name: ConfirmBookingAsync,               publish_profile_secret: PP_ConfirmBookingAsync }
+          - { dir: GetAllServicesWithSubServices/Function,     app_name: GetAllServicesWithSubServices,     publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_DD7E361ED8E247BFAE4D3C01CEF1F11F }
+          - { dir: LockAndRelease/Function,                    app_name: LockAndRelease,                    publish_profile_secret: PP_LockAndRelease }
+
+          - { dir: CreateSubService/Function,                  app_name: CreateSubService,                  publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_B5EFA38190C14232B578E262E0EE9D92 }
+          - { dir: DeleteSubService/Function,                  app_name: DeleteSubService,                  publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_F180F518B01D4569830AFCDA8847AA51 }
+          - { dir: UpdateSubService/Function,                  app_name: UpdateSubService,                  publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_585FFFAF7B954AE4B61FE638E61525BB }
+          - { dir: GetSingleSubService/Function,               app_name: GetSingleSubService,               publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_00C82EC843274B68A5457E394C2AAC6C }
+          - { dir: GetAllSubServices/Function,                 app_name: GetAllSubServices,                 publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_49EF0B26A8F448EF8EFFE76714028399 }  
+          
+          - { dir: CreateService/Function,                    app_name: CreateService,                      publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_A4985D1A12784ED88BBAD1C38600054D }
+          - { dir: DeleteService/Function,                    app_name: DeleteService,                      publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_C6AAAB8A5D9E49C5B081615766D257EF }
+          - { dir: UpdateService/Function,                    app_name: UpdateService,                      publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_9B373DF7A0214B81AF1FEE28A3CD8353 }
+          - { dir: GetSingleService/Function,                 app_name: GetSingleService,                   publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_F13682142A4E4D908F146676F1F87956 }
+          - { dir: GetAllServices/Function,                   app_name: GetAllServices,                     publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_C784EFE41C794F23B3194CB53266D1B1 }  
+
+          - { dir: CreateBooking/Function,                    app_name: CreateBooking,                      publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_B94F14761F0541FABECE331D1AFCF926 }
+          - { dir: GetBooking/Function,                       app_name: GetBooking,                         publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_ACDD859CE1E44539968B31CC12F69D28 }
+          - { dir: GetBookingsByDateRange/Function,           app_name: GetBookingsByDateRange,             publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_3BD745EAA2D74F6882EF9345138568C0 }
+          - { dir: UpdateBooking/Function,                    app_name: UpdateBooking,                      publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_58FEFC75DEA94D5F82C4BC1E776B5F22 }
+          - { dir: DeleteBooking/Function,                    app_name: DeleteBooking,                      publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_94CCA27D808A4D97BC2D641AB7FFB6C5 }
+
+
+          - { dir: BookingCancelledEmail/Function,            app_name: BookingCancelledEmail,            publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_C61D1961D1314D559A786D7BDC149E67 }
+          - { dir: BookingConfirmedEmail/Function,            app_name: BookingConfirmedEmail,            publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_EE8CC73CFA8A4E1BAF505A37C83AEF55 }
+          - { dir: BookingReservedEmail/Function,            app_name: BookingReservedEmail,              publish_profile_secret: AZUREAPPSERVICE_PUBLISHPROFILE_854B574C552A422984A4688BB3C64136 }
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Build & publish
+        working-directory: ${{ matrix.dir }}
+        run: |
+          dotnet restore
+          dotnet publish -c Release -o ../../publish
+
+      - name: Zip‑deploy ${{ matrix.app_name }} using publish profile
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ matrix.app_name }}
+          package: publish
+          publish-profile: ${{ secrets[matrix.publish_profile_secret] }}
+          sku: flexconsumption
+          respect-funcignore: true
