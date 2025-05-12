@@ -52,7 +52,7 @@
             },
             "Microsoft.Azure.Cosmos": {
               "target": "Package",
-              "version": "[3.50.0-preview.0, )"
+              "version": "[3.49.0, )"
             },
             "Microsoft.Azure.Functions.Worker": {
               "target": "Package",

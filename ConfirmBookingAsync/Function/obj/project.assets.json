@@ -118,7 +118,7 @@
           }
         }
       },
-      "Microsoft.Azure.Cosmos/3.50.0-preview.0": {
+      "Microsoft.Azure.Cosmos/3.49.0": {
         "type": "package",
         "dependencies": {
           "Azure.Core": "1.44.1",
@@ -2273,10 +2273,10 @@
         "packageIcon.png"
       ]
     },
-    "Microsoft.Azure.Cosmos/3.50.0-preview.0": {
-      "sha512": "FAYx4wUbGqalQCNEYH69/S0L2ZxCSRWJ7v3/pKrZbaqBlcm2+U8CusVfqMOcuLOG3VX9gshXLHDHe1ihZUOpWw==",
+    "Microsoft.Azure.Cosmos/3.49.0": {
+      "sha512": "HUXzAP27/hEu3lD2SwZLAyc6qDknw+ycftxRgf9igsGhD61iPFlosooBTCQ5jrtWY0vBxK0g4oLxUzPcDg9VoA==",
       "type": "package",
-      "path": "microsoft.azure.cosmos/3.50.0-preview.0",
+      "path": "microsoft.azure.cosmos/3.49.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2290,7 +2290,7 @@
         "lib/netstandard2.0/Microsoft.Azure.Cosmos.Core.dll",
         "lib/netstandard2.0/Microsoft.Azure.Cosmos.Direct.dll",
         "lib/netstandard2.0/Microsoft.Azure.Cosmos.Serialization.HybridRow.dll",
-        "microsoft.azure.cosmos.3.50.0-preview.0.nupkg.sha512",
+        "microsoft.azure.cosmos.3.49.0.nupkg.sha512",
         "microsoft.azure.cosmos.nuspec",
         "runtimes/win-x64/native/Cosmos.CRTCompat.dll",
         "runtimes/win-x64/native/Microsoft.Azure.Cosmos.ServiceInterop.dll",
@@ -6254,7 +6254,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "Azure.Messaging.EventGrid >= 4.30.0",
-      "Microsoft.Azure.Cosmos >= 3.50.0-preview.0",
+      "Microsoft.Azure.Cosmos >= 3.49.0",
       "Microsoft.Azure.Functions.Worker >= 2.0.0",
       "Microsoft.Azure.Functions.Worker.Extensions.EventGrid >= 3.5.0",
       "Microsoft.Azure.Functions.Worker.Extensions.Http >= 3.2.0",
@@ -6314,7 +6314,7 @@
           },
           "Microsoft.Azure.Cosmos": {
             "target": "Package",
-            "version": "[3.50.0-preview.0, )"
+            "version": "[3.49.0, )"
           },
           "Microsoft.Azure.Functions.Worker": {
             "target": "Package",
