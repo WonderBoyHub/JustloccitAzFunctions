@@ -2,16 +2,16 @@ using Newtonsoft.Json;
 using System;
 
 namespace ConfirmBookingAsync.Function.Models;
-public class Booking
+public class BookingModel
 {
     [JsonProperty("id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     [JsonProperty("customerId")]
-    public string CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
 
     [JsonProperty("subServiceId")]
-    public string SubServiceId { get; set; }
+    public string SubServiceId { get; set; } = string.Empty;
 
     [JsonProperty("date")]
     public DateTime Date { get; set; }
@@ -22,8 +22,8 @@ public class Booking
     [JsonProperty("endTime")]
     public TimeSpan EndTime { get; set; }
 
-    [JsonProperty("status")]
-    public string Status { get; set; }
+    [JsonProperty("bookingStatus")]
+    public BookingStatus BookingStatus { get; set; }
 
     [JsonProperty("createdAt")]
     public DateTime CreatedAt { get; set; }
@@ -63,4 +63,13 @@ public class Booking
     public virtual SubServiceModel? SubService { get; set; }
     [JsonProperty("employee")]
     public virtual Employee? Employee { get; set; }
+}
+
+public enum BookingStatus
+{
+    Pending = 0,
+    Locked = 1,
+    Confirmed = 2,
+    Cancelled = 3,
+    Expired = 4
 }

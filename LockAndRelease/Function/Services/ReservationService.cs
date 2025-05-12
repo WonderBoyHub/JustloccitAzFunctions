@@ -280,7 +280,7 @@ namespace Justloccit.Function.Services
                     
                     if (reservation != null)
                     {
-                        // Update status to cancelled
+                        // Update bookingStatus  to cancelled
                         reservation.Status = ReservationStatus.Cancelled;
                         
                         // Update the item in CosmosDB

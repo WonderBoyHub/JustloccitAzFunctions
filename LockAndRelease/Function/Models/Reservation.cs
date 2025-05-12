@@ -27,7 +27,7 @@ namespace Justloccit.Function.Models
         [JsonPropertyName("duration")]
         public int Duration { get; set; }
         
-        [JsonPropertyName("status")]
+        [JsonPropertyName("bookingStatus ")]
         public ReservationStatus Status { get; set; } = ReservationStatus.Locked;
         
         [JsonPropertyName("lockExpiresAt")]

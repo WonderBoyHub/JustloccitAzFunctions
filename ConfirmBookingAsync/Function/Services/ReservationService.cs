@@ -16,7 +16,7 @@ namespace ConfirmBookingAsync.Function.Services
             _cosmosDbService = cosmosDbService;
         }
 
-        public async Task<Booking> ConfirmBookingAsync(string reservationId, Customer customer, CancellationToken cancellationToken = default)
+        public async Task<BookingModel> ConfirmBookingAsync(string reservationId, Customer customer, CancellationToken cancellationToken = default)
         {
             // Get the reservation
             dynamic reservation = await _cosmosDbService.GetItemAsync<dynamic>("ReservationsContainer", reservationId);
@@ -54,7 +54,7 @@ namespace ConfirmBookingAsync.Function.Services
             }
 
             // Create a booking from the reservation
-            var booking = new Booking
+            var booking = new BookingModel
             {
                 Id = Guid.NewGuid().ToString(),
                 CustomerId = customer.Id,
@@ -62,7 +62,7 @@ namespace ConfirmBookingAsync.Function.Services
                 Date = DateTime.Parse(reservation.date.ToString()),
                 StartTime = TimeSpan.Parse(reservation.startTime.ToString()),
                 EndTime = TimeSpan.Parse(reservation.endTime.ToString()),
-                Status = "Confirmed",
+                BookingStatus = BookingStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };

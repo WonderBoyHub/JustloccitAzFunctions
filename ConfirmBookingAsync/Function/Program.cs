@@ -3,9 +3,10 @@ using Microsoft.Azure.Functions.Worker.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ConfirmBookingAsync.Function.Data;
-using ConfirmBookingAsync.Function.Services;
 using Microsoft.Azure.Cosmos;
 using System;
+using Azure.Messaging.EventGrid;
+using Azure;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
@@ -23,15 +24,27 @@ builder.Services.AddSingleton(sp =>
     return new CosmosClient(connectionString);
 });
 
+// Register EventGridPublisherClient as a singleton
+builder.Services.AddSingleton(sp =>
+{
+    var eventGridEndpoint = Environment.GetEnvironmentVariable("EventGridEndpoint");
+    var eventGridKey = Environment.GetEnvironmentVariable("EventGridKey");
+    
+    if (string.IsNullOrEmpty(eventGridEndpoint) || string.IsNullOrEmpty(eventGridKey))
+    {
+        throw new InvalidOperationException("EventGrid settings are not configured. Please add 'EventGridEndpoint' and 'EventGridKey' to the configuration.");
+    }
+    
+    return new EventGridPublisherClient(
+        new Uri(eventGridEndpoint),
+        new AzureKeyCredential(eventGridKey));
+});
+
 // Register HttpClient as a singleton
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<HttpClient>();
 
 // Register CosmosDbService as a singleton
 builder.Services.AddSingleton<CosmosDbService>();
-
-// Register ReservationService
-builder.Services.AddSingleton<ReservationService>();
 
 var app = builder.Build();
 app.Run(); 

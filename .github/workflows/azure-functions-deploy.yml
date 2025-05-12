@@ -28,6 +28,18 @@ jobs:
           - { dir: GetAllServicesWithSubServices/Function,     app_name: GetAllServicesWithSubServices,     publish_profile_secret: PP_GetAllServicesWithSubServices }
           - { dir: LockAndRelease/Function,                    app_name: LockAndRelease,                    publish_profile_secret: PP_LockAndRelease }
 
+          - { dir: CreateSubService/Function,                  app_name: CreateSubService,                    publish_profile_secret: PP_CreateSubService }
+          - { dir: DeleteSubService/Function,                  app_name: DeleteSubService,                    publish_profile_secret: PP_DeleteSubService }
+          - { dir: UpdateSubService/Function,                  app_name: UpdateSubService,                    publish_profile_secret: PP_UpdateSubService }
+          - { dir: GetSingleSubService/Function,               app_name: GetSingleSubService,               publish_profile_secret: PP_GetSingleSubService }
+          - { dir: GetAllSubServices/Function,                 app_name: GetAllSubServices,                  publish_profile_secret: PP_GetAllSubServices }  
+          
+          - { dir: CreateService/Function,                    app_name: CreateService,                    publish_profile_secret: PP_CreateService }
+          - { dir: DeleteService/Function,                    app_name: DeleteService,                    publish_profile_secret: PP_DeleteService }
+          - { dir: UpdateService/Function,                    app_name: UpdateService,                    publish_profile_secret: PP_UpdateService }
+          - { dir: GetSingleService/Function,                 app_name: GetSingleService,                  publish_profile_secret: PP_GetSingleService }
+          - { dir: GetAllServices/Function,                   app_name: GetAllServices,                     publish_profile_secret: PP_GetAllServices }  
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

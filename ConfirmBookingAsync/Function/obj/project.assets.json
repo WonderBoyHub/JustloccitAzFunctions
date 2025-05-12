@@ -25,6 +25,23 @@
           }
         }
       },
+      "Azure.Messaging.EventGrid/4.30.0": {
+        "type": "package",
+        "dependencies": {
+          "Azure.Core": "1.44.1",
+          "System.Memory.Data": "6.0.0"
+        },
+        "compile": {
+          "lib/net8.0/Azure.Messaging.EventGrid.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Azure.Messaging.EventGrid.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Google.Protobuf/3.28.0": {
         "type": "package",
         "compile": {
@@ -202,6 +219,20 @@
         },
         "runtime": {
           "lib/netstandard2.0/Microsoft.Azure.Functions.Worker.Extensions.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.Azure.Functions.Worker.Extensions.EventGrid/3.5.0": {
+        "type": "package",
+        "dependencies": {
+          "Azure.Messaging.EventGrid": "4.29.0",
+          "Microsoft.Azure.Functions.Worker.Core": "1.20.0",
+          "Microsoft.Azure.Functions.Worker.Extensions.Abstractions": "1.3.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Azure.Functions.Worker.Extensions.EventGrid.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Azure.Functions.Worker.Extensions.EventGrid.dll": {}
         }
       },
       "Microsoft.Azure.Functions.Worker.Extensions.Http/3.2.0": {
@@ -2093,6 +2124,24 @@
         "lib/netstandard2.0/Azure.Core.xml"
       ]
     },
+    "Azure.Messaging.EventGrid/4.30.0": {
+      "sha512": "5N1ubSPyyN1Pt0qhcx9C+lUGmfzjM1hD/A2Ukhi67jWZmrqtZu4mpi31vWgAo/niwq0iya+3nhYaXRxXNerAdQ==",
+      "type": "package",
+      "path": "azure.messaging.eventgrid/4.30.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "CHANGELOG.md",
+        "README.md",
+        "azure.messaging.eventgrid.4.30.0.nupkg.sha512",
+        "azure.messaging.eventgrid.nuspec",
+        "azureicon.png",
+        "lib/net8.0/Azure.Messaging.EventGrid.dll",
+        "lib/net8.0/Azure.Messaging.EventGrid.xml",
+        "lib/netstandard2.0/Azure.Messaging.EventGrid.dll",
+        "lib/netstandard2.0/Azure.Messaging.EventGrid.xml"
+      ]
+    },
     "Google.Protobuf/3.28.0": {
       "sha512": "lVsLcLIHpkOABswgydr0sjkIhSN5XE9C6AgLXxvMsa6pSSJIpmAIPvK/NZpuF+HTB6xp1R8T5nhLausWVOrU/w==",
       "type": "package",
@@ -2303,6 +2352,19 @@
         "lib/netstandard2.0/Microsoft.Azure.Functions.Worker.Extensions.Abstractions.dll",
         "microsoft.azure.functions.worker.extensions.abstractions.1.3.0.nupkg.sha512",
         "microsoft.azure.functions.worker.extensions.abstractions.nuspec"
+      ]
+    },
+    "Microsoft.Azure.Functions.Worker.Extensions.EventGrid/3.5.0": {
+      "sha512": "XxhKLOZmGaq7q/bdD2JFJXEueK4Gj9jA6Ba5AWQ6YnnB2eCH3BxMq1M/+F7Unb415eygD7w3WLNIwYZ0irIOtQ==",
+      "type": "package",
+      "path": "microsoft.azure.functions.worker.extensions.eventgrid/3.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/netstandard2.0/Microsoft.Azure.Functions.Worker.Extensions.EventGrid.dll",
+        "microsoft.azure.functions.worker.extensions.eventgrid.3.5.0.nupkg.sha512",
+        "microsoft.azure.functions.worker.extensions.eventgrid.nuspec"
       ]
     },
     "Microsoft.Azure.Functions.Worker.Extensions.Http/3.2.0": {
@@ -6191,8 +6253,10 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Azure.Messaging.EventGrid >= 4.30.0",
       "Microsoft.Azure.Cosmos >= 3.50.0-preview.0",
       "Microsoft.Azure.Functions.Worker >= 2.0.0",
+      "Microsoft.Azure.Functions.Worker.Extensions.EventGrid >= 3.5.0",
       "Microsoft.Azure.Functions.Worker.Extensions.Http >= 3.2.0",
       "Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore >= 2.0.1",
       "Microsoft.Azure.Functions.Worker.Sdk >= 2.0.0",
@@ -6200,18 +6264,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/kevinsamuelhougesen/.nuget/packages/": {}
+    "/Users/kevinsamuelhougesen/Documents/packages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/kevinsamuelhougesen/az/ConfirmBookingAsync/Function/ConfirmBookingAsync.Function.csproj",
+      "projectUniqueName": "/Users/kevinsamuelhougesen/Documents/GitHub/JustloccitAzFunctions/ConfirmBookingAsync/Function/ConfirmBookingAsync.Function.csproj",
       "projectName": "ConfirmBookingAsync.Function",
-      "projectPath": "/Users/kevinsamuelhougesen/az/ConfirmBookingAsync/Function/ConfirmBookingAsync.Function.csproj",
-      "packagesPath": "/Users/kevinsamuelhougesen/.nuget/packages/",
-      "outputPath": "/Users/kevinsamuelhougesen/az/ConfirmBookingAsync/Function/obj/",
+      "projectPath": "/Users/kevinsamuelhougesen/Documents/GitHub/JustloccitAzFunctions/ConfirmBookingAsync/Function/ConfirmBookingAsync.Function.csproj",
+      "packagesPath": "/Users/kevinsamuelhougesen/Documents/packages",
+      "outputPath": "/Users/kevinsamuelhougesen/Documents/GitHub/JustloccitAzFunctions/ConfirmBookingAsync/Function/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
+        "/Users/kevinsamuelhougesen/Documents/NuGet.Config",
         "/Users/kevinsamuelhougesen/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
@@ -6219,8 +6284,7 @@
       ],
       "sources": {
         "/usr/local/share/dotnet/library-packs": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nuget.pkg.github.com/WonderBoyHub/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
@@ -6244,6 +6308,10 @@
       "net9.0": {
         "targetAlias": "net9.0",
         "dependencies": {
+          "Azure.Messaging.EventGrid": {
+            "target": "Package",
+            "version": "[4.30.0, )"
+          },
           "Microsoft.Azure.Cosmos": {
             "target": "Package",
             "version": "[3.50.0-preview.0, )"
@@ -6251,6 +6319,10 @@
           "Microsoft.Azure.Functions.Worker": {
             "target": "Package",
             "version": "[2.0.0, )"
+          },
+          "Microsoft.Azure.Functions.Worker.Extensions.EventGrid": {
+            "target": "Package",
+            "version": "[3.5.0, )"
           },
           "Microsoft.Azure.Functions.Worker.Extensions.Http": {
             "target": "Package",

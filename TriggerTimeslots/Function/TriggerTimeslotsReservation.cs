@@ -57,7 +57,7 @@ namespace Justloccit.Function
 
         private async Task ProcessReservation(ReservationDocument reservation)
         {
-            _logger.LogInformation("Processing reservation {Id} for date {Date} with status {Status}", 
+            _logger.LogInformation("Processing reservation {Id} for date {Date} with bookingStatus  {Status}", 
                 reservation.Id, reservation.Date, reservation.Status);
 
             // Parse reservation time slots
@@ -83,7 +83,7 @@ namespace Justloccit.Function
                 return;
             }
 
-            // Update the timeslots based on reservation status
+            // Update the timeslots based on reservation bookingStatus 
             bool isAvailable = reservation.Status == ReservationStatus.Cancelled || 
                                reservation.Status == ReservationStatus.Expired;
 

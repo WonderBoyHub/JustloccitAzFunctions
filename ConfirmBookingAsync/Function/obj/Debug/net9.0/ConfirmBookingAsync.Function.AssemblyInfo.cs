@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConfirmBookingAsync.Function")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd1998cc267e9af7c606ff43f0da742fe3f6a78f")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConfirmBookingAsync.Function")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConfirmBookingAsync.Function")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
