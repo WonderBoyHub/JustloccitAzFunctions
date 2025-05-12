@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - '**/Function/**/**'
-      - '.github/workflows/all/azure-functions-deploy.yml'
+      - '**/Function/**'
+      - '.github/workflows/azure-functions-deploy.yml'
   workflow_dispatch:
 
 env:
