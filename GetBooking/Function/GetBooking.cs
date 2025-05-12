@@ -58,7 +58,7 @@ namespace Justloccit.Function
                 }
                 
                 // Get the booking from the database
-                var booking = await _cosmosDbService.GetItemAsync<Booking>("Bookings", bookingId);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>("Bookings", bookingId);
                 if (booking == null)
                 {
                     return new NotFoundObjectResult(new GetBookingResponse 
@@ -69,7 +69,7 @@ namespace Justloccit.Function
                 }
                 
                 // Map the booking entity to booking DTO
-                var bookingDto = new BookingDto
+                var bookingDto = new BookingModel
                 {
                     Id = booking.Id,
                     CustomerId = booking.CustomerId,

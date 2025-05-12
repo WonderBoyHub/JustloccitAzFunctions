@@ -3,7 +3,7 @@ using System;
 
 namespace GetBooking.Function.Models
 {
-    public class Booking
+    public class BookingModel
     {
         [JsonProperty("id")]
         public string Id { get; set; } = string.Empty;
