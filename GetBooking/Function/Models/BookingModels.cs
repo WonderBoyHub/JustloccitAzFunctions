@@ -10,7 +10,7 @@ namespace GetBooking.Function.Models
     public class GetBookingResponse
     {
         public bool Success { get; set; }
-        public BookingDto? Booking { get; set; }
+        public BookingModel? Booking { get; set; }
         public string? Message { get; set; }
     }
 

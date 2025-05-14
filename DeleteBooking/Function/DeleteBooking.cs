@@ -46,7 +46,7 @@ namespace Justloccit.Function
                 }
                 
                 // Verify the booking exists
-                var booking = await _cosmosDbService.GetItemAsync<Booking>("Bookings", deleteRequest.BookingId);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>(deleteRequest.BookingId, deleteRequest.BookingId);
                 if (booking == null)
                 {
                     return new NotFoundObjectResult(new DeleteBookingResponse 
@@ -57,7 +57,7 @@ namespace Justloccit.Function
                 }
                 
                 // Delete the booking
-                await _cosmosDbService.DeleteItemAsync("Bookings", deleteRequest.BookingId);
+                await _cosmosDbService.DeleteItemAsync(booking.Id, deleteRequest.BookingId);
                 
                 _logger.LogInformation($"Successfully deleted booking {deleteRequest.BookingId}");
                 

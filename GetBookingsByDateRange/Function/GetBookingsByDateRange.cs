@@ -104,10 +104,10 @@ namespace Justloccit.Function
                 }
                 
                 // Get the bookings from the database
-                var bookings = await _cosmosDbService.GetItemsAsync<Booking>("Bookings", queryBuilder.ToString());
+                var bookings = await _cosmosDbService.GetItemsAsync<BookingModel>("Bookings", queryBuilder.ToString());
                 
                 // Map the booking entities to booking DTOs
-                var bookingDtos = bookings.Select(booking => new BookingDto
+                var bookingDtos = bookings.Select(booking => new BookingModel
                 {
                     Id = booking.Id,
                     CustomerId = booking.CustomerId,
@@ -121,7 +121,7 @@ namespace Justloccit.Function
                     Date = booking.Date,
                     StartTime = booking.StartTime,
                     EndTime = booking.EndTime,
-                    Status = booking.Status,
+                    BookingStatus = booking.BookingStatus,
                     Notes = booking.Notes,
                     CreatedAt = booking.CreatedAt,
                     UpdatedAt = booking.UpdatedAt

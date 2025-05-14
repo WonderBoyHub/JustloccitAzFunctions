@@ -83,7 +83,7 @@ namespace Justloccit.Function
                     Date = booking.Date,
                     StartTime = booking.StartTime,
                     EndTime = booking.EndTime,
-                    Status = booking.Status,
+                    BookingStatus = booking.BookingStatus,
                     Notes = booking.Notes,
                     CreatedAt = booking.CreatedAt,
                     UpdatedAt = booking.UpdatedAt

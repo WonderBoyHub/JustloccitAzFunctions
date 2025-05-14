@@ -53,7 +53,7 @@ namespace Justloccit.Function
                 }
                 
                 // Get the existing booking
-                var booking = await _cosmosDbService.GetItemAsync<Booking>("Bookings", updateRequest.BookingId);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>("Bookings", updateRequest.BookingId);
                 if (booking == null)
                 {
                     return new NotFoundObjectResult(new UpdateBookingResponse 
@@ -183,7 +183,7 @@ namespace Justloccit.Function
             }
         }
         
-        private async Task PublishBookingConfirmedEventAsync(Booking booking)
+        private async Task PublishBookingConfirmedEventAsync(BookingModel booking)
         {
             try
             {
@@ -221,7 +221,7 @@ namespace Justloccit.Function
             }
         }
         
-        private async Task PublishBookingCancelledEventAsync(Booking booking)
+        private async Task PublishBookingCancelledEventAsync(BookingModel booking)
         {
             try
             {
