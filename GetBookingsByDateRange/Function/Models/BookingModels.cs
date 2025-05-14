@@ -19,6 +19,7 @@ namespace GetBookingsByDateRange.Function.Models
         public string? Message { get; set; }
     }
 
+
     public class BookingDto
     {
         public string Id { get; set; } = string.Empty;
