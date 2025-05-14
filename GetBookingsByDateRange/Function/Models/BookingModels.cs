@@ -15,7 +15,7 @@ namespace GetBookingsByDateRange.Function.Models
     public class GetBookingsByDateRangeResponse
     {
         public bool Success { get; set; }
-        public List<BookingDto> Bookings { get; set; } = new();
+        public List<BookingModel> Bookings { get; set; } = new();
         public string? Message { get; set; }
     }
 
