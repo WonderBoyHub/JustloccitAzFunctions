@@ -38,26 +38,26 @@ namespace Justloccit.Function
             {
                 // Read request body
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                
+
                 if (string.IsNullOrEmpty(requestBody))
                 {
                     _logger.LogWarning("Empty request body received");
                     return new BadRequestObjectResult("Request body cannot be empty");
                 }
-                
+
                 _logger.LogDebug("Parsing request body");
-                
+
                 // First try to parse as a single service request
                 LockSingleServiceRequest singleRequest = null;
                 LockMultipleServicesRequest multiRequest = null;
-                
+
                 try
                 {
                     singleRequest = JsonSerializer.Deserialize<LockSingleServiceRequest>(requestBody, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
-                    
+
                     // Simple validation check - if it's a multi-service request, the SubServiceId will be null
                     if (string.IsNullOrEmpty(singleRequest?.SubServiceId))
                     {
@@ -70,7 +70,7 @@ namespace Justloccit.Function
                     _logger.LogDebug(ex, "Could not parse as single service request, trying multi-service format");
                     singleRequest = null;
                 }
-                
+
                 // If not a single service request, try to parse as a multi-service request
                 if (singleRequest == null)
                 {
@@ -80,7 +80,7 @@ namespace Justloccit.Function
                         {
                             PropertyNameCaseInsensitive = true
                         });
-                        
+
                         // Simple validation check
                         if (multiRequest?.SubServices == null || multiRequest.SubServices.Count == 0)
                         {
@@ -94,38 +94,38 @@ namespace Justloccit.Function
                         return new BadRequestObjectResult("Invalid request format");
                     }
                 }
-                
+
                 // Process single service request
                 if (singleRequest != null)
                 {
-                    _logger.LogInformation("Processing single service reservation request for date {Date} at {StartTime}", 
+                    _logger.LogInformation("Processing single service reservation request for date {Date} at {StartTime}",
                         singleRequest.Date, singleRequest.StartTime);
-                    
+
                     // Get sub-service details from Cosmos DB
-                    var (success, serviceName, duration) = 
+                    var (success, serviceName, duration) =
                         await _reservationService.GetSubServiceDetailsAsync(singleRequest.SubServiceId);
-                    
+
                     if (!success)
                     {
                         _logger.LogWarning("Sub-service with ID {SubServiceId} not found", singleRequest.SubServiceId);
                         return new NotFoundObjectResult($"Sub-service with ID {singleRequest.SubServiceId} not found");
                     }
-                    
+
                     // Create the reservation
-                    var (reservation, createSuccess) = 
+                    var (reservation, createSuccess) =
                         await _reservationService.CreateSingleServiceReservationAsync(
-                            singleRequest.SubServiceId, 
-                            singleRequest.Date, 
+                            singleRequest.SubServiceId,
+                            singleRequest.Date,
                             singleRequest.StartTime,
                             serviceName,
                             duration);
-                    
+
                     if (!createSuccess || reservation == null)
                     {
                         _logger.LogError("Failed to create single service reservation");
                         return new ObjectResult("Failed to create reservation") { StatusCode = (int)HttpStatusCode.InternalServerError };
                     }
-                    
+
                     // Return response
                     var response = new LockSingleServiceResponse
                     {
@@ -137,38 +137,38 @@ namespace Justloccit.Function
                         Duration = reservation.Duration,
                         ServiceName = serviceName
                     };
-                    
+
                     _logger.LogInformation("Successfully created single service reservation with ID {ReservationId}", reservation.Id);
                     return new OkObjectResult(response);
                 }
                 else if (multiRequest != null)
                 {
-                    _logger.LogInformation("Processing multi-service reservation request for date {Date} at {StartTime} with {ServiceCount} services", 
+                    _logger.LogInformation("Processing multi-service reservation request for date {Date} at {StartTime} with {ServiceCount} services",
                         multiRequest.Date, multiRequest.StartTime, multiRequest.SubServices.Count);
-                    
+
                     // Get sub-service details from Cosmos DB
-                    var subServiceDetails = 
+                    var subServiceDetails =
                         await _reservationService.GetMultipleSubServiceDetailsAsync(multiRequest.SubServices);
-                    
+
                     if (subServiceDetails.Count == 0)
                     {
                         _logger.LogWarning("No valid sub-services found for the multi-service request");
                         return new NotFoundObjectResult("No valid sub-services found");
                     }
-                    
+
                     // Create the reservation
-                    var (reservation, createSuccess) = 
+                    var (reservation, createSuccess) =
                         await _reservationService.CreateMultiServiceReservationAsync(
-                            multiRequest.Date, 
+                            multiRequest.Date,
                             multiRequest.StartTime,
                             subServiceDetails);
-                    
+
                     if (!createSuccess || reservation == null)
                     {
                         _logger.LogError("Failed to create multi-service reservation");
                         return new ObjectResult("Failed to create reservation") { StatusCode = (int)HttpStatusCode.InternalServerError };
                     }
-                    
+
                     // Return response
                     var response = new LockMultipleServicesResponse
                     {
@@ -185,11 +185,11 @@ namespace Justloccit.Function
                             Duration = s.Duration
                         }).ToList()
                     };
-                    
+
                     _logger.LogInformation("Successfully created multi-service reservation with ID {ReservationId}", reservation.Id);
                     return new OkObjectResult(response);
                 }
-                
+
                 // If we got here, neither request type was valid
                 _logger.LogWarning("Request could not be parsed as either a single or multi-service reservation");
                 return new BadRequestObjectResult("Invalid request format");
@@ -198,6 +198,90 @@ namespace Justloccit.Function
             {
                 _logger.LogError(ex, "Error processing lock reservation request");
                 return new ObjectResult("An error occurred processing your request") { StatusCode = (int)HttpStatusCode.InternalServerError };
+            }
+        }
+        
+                [Function("ReleaseLockedBookingAsync")]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "ReleaseLockedBookingAsync")] HttpRequest req)
+        {
+            _logger.LogInformation("Processing release reservation request");
+
+            if (req == null)
+            {
+                _logger.LogError("Request object is null");
+                return new BadRequestObjectResult("Invalid request");
+            }
+
+            try
+            {
+                // Read request body
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                
+                if (string.IsNullOrEmpty(requestBody))
+                {
+                    _logger.LogWarning("Empty request body received");
+                    return new BadRequestObjectResult("Request body cannot be empty");
+                }
+                
+                _logger.LogDebug("Parsing request body");
+                
+                ReleaseReservationRequest request;
+                try
+                {
+                    request = JsonSerializer.Deserialize<ReleaseReservationRequest>(requestBody, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                }
+                catch (JsonException ex)
+                {
+                    _logger.LogError(ex, "Failed to deserialize request body");
+                    return new BadRequestObjectResult("Invalid request format");
+                }
+                
+                // Validate request
+                if (request == null || string.IsNullOrEmpty(request.BookingId) || string.IsNullOrEmpty(request.Date))
+                {
+                    _logger.LogWarning("Invalid request: BookingId={BookingId}, Date={Date}", 
+                        request?.BookingId ?? "(null)", request?.Date ?? "(null)");
+                    return new BadRequestObjectResult("Invalid request. BookingId and Date are required.");
+                }
+                
+                _logger.LogInformation("Releasing reservation with ID {BookingId} for date {Date}", request.BookingId, request.Date);
+                
+                // Release the reservation
+                bool success = await _reservationService.ReleaseReservationAsync(request.BookingId, request.Date);
+                
+                if (success)
+                {
+                    var response = new ReleaseReservationResponse
+                    {
+                        Success = true,
+                        Message = "Reservation released successfully"
+                    };
+                    
+                    _logger.LogInformation("Successfully released reservation {BookingId}", request.BookingId);
+                    return new OkObjectResult(response);
+                }
+                else
+                {
+                    var response = new ReleaseReservationResponse
+                    {
+                        Success = false,
+                        Message = "Reservation not found or could not be released"
+                    };
+                    
+                    _logger.LogWarning("Failed to release reservation {BookingId}: not found or could not be released", request.BookingId);
+                    return new NotFoundObjectResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing release reservation request");
+                return new ObjectResult("An error occurred processing your request") 
+                { 
+                    StatusCode = (int)HttpStatusCode.InternalServerError 
+                };
             }
         }
     }
