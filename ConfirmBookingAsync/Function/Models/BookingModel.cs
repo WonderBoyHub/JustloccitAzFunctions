@@ -56,7 +56,7 @@ public class BookingModel
     public DateTime? LockExpiresAt { get; set; }
     // Navigation properties
     [JsonProperty("customer")]
-    public virtual Customer? Customer { get; set; }
+    public virtual CustomerModel? Customer { get; set; }
     [JsonProperty("service")]
     public virtual ServiceModel? Service { get; set; }
     [JsonProperty("subService")]

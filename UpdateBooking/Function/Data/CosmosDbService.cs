@@ -60,7 +60,7 @@ namespace UpdateBooking.Function.Data
         {
             try
             {
-                var container = _containers[containerName];
+                var container = _containers[containerName]!;
                 var response = await container.ReplaceItemAsync(item, id, new PartitionKey(id));
                 return response.Resource;
             }

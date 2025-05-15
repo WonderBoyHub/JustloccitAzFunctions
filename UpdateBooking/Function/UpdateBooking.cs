@@ -53,7 +53,7 @@ namespace Justloccit.Function
                 }
                 
                 // Get the existing booking
-                var booking = await _cosmosDbService.GetItemAsync<BookingModel>("Bookings", updateRequest.BookingId);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>(updateRequest.BookingId, updateRequest.BookingId);
                 if (booking == null)
                 {
                     return new NotFoundObjectResult(new UpdateBookingResponse 

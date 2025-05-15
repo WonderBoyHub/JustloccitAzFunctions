@@ -2,9 +2,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace ConfirmBookingAsync.Function.Models
+namespace CreateBooking.Function.Models
 {
-    public class Customer
+    public class CustomerModel
     {
         [JsonProperty("id")]
         public string Id { get; set; }

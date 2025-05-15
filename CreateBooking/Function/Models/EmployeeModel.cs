@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
-namespace ConfirmBookingAsync.Function.Models;
-public class Employee
+namespace CreateBooking.Function.Models;
+public class EmployeeModel
 {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }

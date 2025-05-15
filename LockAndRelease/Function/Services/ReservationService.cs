@@ -121,7 +121,7 @@ namespace Justloccit.Function.Services
                     // Query to get sub-service details by ID
                     var query = new QueryDefinition(
                         "SELECT c.id, c.name FROM c WHERE c.id = @id")
-                        .WithParameter("@id", subService.SubServiceId);
+                        .WithParameter("@id", subService.Id);
                         
                     var iterator = _subServicesContainer.GetItemQueryIterator<dynamic>(query);
                     
@@ -133,7 +133,7 @@ namespace Justloccit.Function.Services
                         if (service != null)
                         {
                             result.Add((
-                                subService.SubServiceId,
+                                subService.Id,
                                 service.name.ToString(),
                                 subService.Duration
                             ));

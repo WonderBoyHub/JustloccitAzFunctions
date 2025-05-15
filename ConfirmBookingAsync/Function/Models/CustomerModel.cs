@@ -1,21 +1,19 @@
 using Newtonsoft.Json;
 namespace ConfirmBookingAsync.Function.Models;
-public class Employee
+public class CustomerModel
 {
     [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
-    [JsonProperty(PropertyName = "firstName")]
-    public string FirstName { get; set; }
-    [JsonProperty(PropertyName = "lastName")]
-    public string LastName { get; set; }
+    public required string Id { get; set; }
+    [JsonProperty(PropertyName = "fullName")]
+    public required string FullName { get; set; }
     [JsonProperty(PropertyName = "email")]
-    public string Email { get; set; }
+    public required string Email { get; set; }
     [JsonProperty(PropertyName = "phone")]
-    public string Phone { get; set; }
-    [JsonProperty(PropertyName = "isActive")]
-    public bool IsActive { get; set; } = true;
+    public required int Phone { get; set; }
     [JsonProperty(PropertyName = "createdAt")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     [JsonProperty(PropertyName = "updatedAt")]
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    [JsonProperty(PropertyName = "bookings")]
+    public ICollection<BookingModel> Bookings { get; set; } = new List<BookingModel>();
 }

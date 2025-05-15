@@ -45,17 +45,18 @@ namespace ConfirmBookingAsync.Function
                 // Read and deserialize the request body
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync(cancellationToken);
                 var bookingRequest = JsonConvert.DeserializeObject<BookingConfirmationRequest>(requestBody);
+                var bookingReq = bookingRequest?.Booking;
                 
-                if (bookingRequest == null || string.IsNullOrEmpty(bookingRequest.BookingId))
+                if (bookingReq == null || string.IsNullOrEmpty(bookingReq.Id))
                 {
-                    return new BadRequestObjectResult(new BookingConfirmationResponse 
-                    { 
-                        Success = false, 
-                        Message = "BookingId is required" 
+                    return new BadRequestObjectResult(new BookingConfirmationResponse
+                    {
+                        Success = false,
+                        Message = "BookingId is required"
                     });
                 }
                 
-                if (bookingRequest.Customer == null || string.IsNullOrEmpty(bookingRequest.Customer.Id))
+                if (bookingReq.Customer == null || string.IsNullOrEmpty(bookingReq.Customer.Id))
                 {
                     return new BadRequestObjectResult(new BookingConfirmationResponse 
                     { 
@@ -65,36 +66,36 @@ namespace ConfirmBookingAsync.Function
                 }
                 
                 // Get the reservation
-                dynamic reservation = await _cosmosDbService.GetItemAsync<dynamic>("Reservations", bookingRequest.BookingId);
+                dynamic reservation = await _cosmosDbService.GetItemAsync<dynamic>("Reservations", bookingReq.Id);
                 
                 if (reservation == null)
                 {
                     return new BadRequestObjectResult(new BookingConfirmationResponse 
                     { 
                         Success = false, 
-                        Message = $"Reservation with ID {bookingRequest.BookingId} not found" 
+                        Message = $"Reservation with ID {bookingReq.Id} not found" 
                     });
                 }
 
                 // Check if the customer exists or create a new one
-                Customer existingCustomer = null;
-                if (!string.IsNullOrEmpty(bookingRequest.Customer.Id))
+                CustomerModel existingCustomer = null;
+                if (!string.IsNullOrEmpty(bookingReq.Customer.Id))
                 {
-                    existingCustomer = await _cosmosDbService.GetItemAsync<Customer>("Customers", bookingRequest.Customer.Id);
+                    existingCustomer = await _cosmosDbService.GetItemAsync<CustomerModel>("Customers", bookingReq.Customer.Id);
                 }
 
-                Customer customer;
+                CustomerModel customer;
                 if (existingCustomer == null)
                 {
                     // Create a new customer with a generated Id if one wasn't provided
-                    customer = new Customer
+                    customer = new CustomerModel
                     {
-                        Id = string.IsNullOrEmpty(bookingRequest.Customer.Id) 
+                        Id = string.IsNullOrEmpty(bookingReq.Customer.Id) 
                             ? Guid.NewGuid().ToString() 
-                            : bookingRequest.Customer.Id,
-                        Name = bookingRequest.Customer.Name ?? string.Empty,
-                        Email = bookingRequest.Customer.Email ?? string.Empty,
-                        Phone = bookingRequest.Customer.Phone ?? string.Empty,
+                            : bookingReq.Customer.Id,
+                        FullName = bookingReq.Customer.FullName ?? string.Empty,
+                        Email = bookingReq.Customer.Email ?? string.Empty,
+                        Phone = bookingReq.Customer.Phone,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };
@@ -104,9 +105,9 @@ namespace ConfirmBookingAsync.Function
                 else
                 {
                     // Use existing customer but update info if needed
-                    existingCustomer.Name = bookingRequest.Customer.Name ?? existingCustomer.Name;
-                    existingCustomer.Email = bookingRequest.Customer.Email ?? existingCustomer.Email;
-                    existingCustomer.Phone = bookingRequest.Customer.Phone ?? existingCustomer.Phone;
+                    existingCustomer.FullName = bookingReq.Customer.FullName ?? existingCustomer.FullName;
+                    existingCustomer.Email = bookingReq.Customer.Email ?? existingCustomer.Email;
+                    existingCustomer.Phone = bookingReq.Customer.Phone;
                     existingCustomer.UpdatedAt = DateTime.UtcNow;
                     
                     await _cosmosDbService.UpdateItemAsync("Customers", existingCustomer, existingCustomer.Id);
@@ -131,12 +132,12 @@ namespace ConfirmBookingAsync.Function
                 await _cosmosDbService.CreateItemAsync("Bookings", booking, booking.Id);
 
                 // Delete the reservation (optional, could also mark it as 'confirmed')
-                await _cosmosDbService.DeleteItemAsync("Reservations", bookingRequest.BookingId);
+                await _cosmosDbService.DeleteItemAsync("Reservations", bookingReq.Id);
 
-                _logger.LogInformation($"Successfully confirmed booking {booking.Id} from reservation {bookingRequest.BookingId}");
+                _logger.LogInformation($"Successfully confirmed booking {booking.Id} from reservation {bookingReq.Id}");
                 
                 // Publish event to EventGrid for BookingReservedEmail function
-                await PublishBookingReservedEventAsync(booking, customer);
+                await PublishBookingReservedEventAsync(booking, existingCustomer ?? customer);
                 
                 // Return the confirmed booking details
                 return new OkObjectResult(new BookingConfirmationResponse
@@ -163,7 +164,7 @@ namespace ConfirmBookingAsync.Function
             }
         }
         
-        private async Task PublishBookingReservedEventAsync(BookingModel booking, Customer customer)
+        private async Task PublishBookingReservedEventAsync(BookingModel booking, CustomerModel customer)
         {
             try
             {
@@ -172,7 +173,7 @@ namespace ConfirmBookingAsync.Function
                 {
                     booking.Id,
                     booking.CustomerId,
-                    CustomerName = customer.Name,
+                    CustomerName = customer.FullName,
                     CustomerEmail = customer.Email,
                     CustomerPhone = customer.Phone,
                     booking.SubServiceId,

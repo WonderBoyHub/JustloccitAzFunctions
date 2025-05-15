@@ -24,7 +24,7 @@ namespace CreateBooking.Function.Models
         public TimeSpan EndTime { get; set; }
 
         [JsonProperty("bookingStatus ")]
-        public BookingStatus BookingStatus  { get; set; } 
+        public BookingStatus BookingStatus { get; set; }
 
         [JsonProperty("createdAt")]
         public DateTime CreatedAt { get; set; }
@@ -52,6 +52,10 @@ namespace CreateBooking.Function.Models
 
         [JsonProperty("notes")]
         public string Notes { get; set; } = string.Empty;
+        [JsonProperty("customer")]
+        public virtual CustomerModel? Customer { get; set; }
+        [JsonProperty("employee")]
+        public virtual EmployeeModel? Employee { get; set; }
     }
     public enum BookingStatus
     {
