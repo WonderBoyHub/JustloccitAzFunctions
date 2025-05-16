@@ -41,26 +41,18 @@ namespace Justloccit.Function
             {
                 // Read and deserialize the request body
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync(cancellationToken);
-                var updateRequest = JsonConvert.DeserializeObject<UpdateBookingRequest>(requestBody);
+                var updateRequest = JsonConvert.DeserializeObject<BookingModel>(requestBody);
                 
-                if (updateRequest == null || string.IsNullOrEmpty(updateRequest.BookingId))
+                if (updateRequest == null)
                 {
-                    return new BadRequestObjectResult(new UpdateBookingResponse 
-                    { 
-                        Success = false, 
-                        Message = "BookingId is required" 
-                    });
+                    return new BadRequestObjectResult("Invalid request body");
                 }
                 
                 // Get the existing booking
-                var booking = await _cosmosDbService.GetItemAsync<BookingModel>(updateRequest.BookingId, updateRequest.BookingId);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>(updateRequest.Id, updateRequest.Id);
                 if (booking == null)
                 {
-                    return new NotFoundObjectResult(new UpdateBookingResponse 
-                    { 
-                        Success = false, 
-                        Message = $"Booking with ID {updateRequest.BookingId} not found" 
-                    });
+                    return new BadRequestObjectResult("Booking not found");
                 }
                 
                 // Store the previous status to detect changes
@@ -75,11 +67,7 @@ namespace Justloccit.Function
                     var customer = await _cosmosDbService.GetItemAsync<dynamic>("Customers", updateRequest.CustomerId);
                     if (customer == null)
                     {
-                        return new BadRequestObjectResult(new UpdateBookingResponse 
-                        { 
-                            Success = false, 
-                            Message = $"Customer with ID {updateRequest.CustomerId} not found" 
-                        });
+                        return new BadRequestObjectResult("Could not find customer");
                     }
                     
                     booking.CustomerId = updateRequest.CustomerId;
@@ -95,11 +83,7 @@ namespace Justloccit.Function
                     var subService = await _cosmosDbService.GetItemAsync<dynamic>("SubServices", updateRequest.SubServiceId);
                     if (subService == null)
                     {
-                        return new BadRequestObjectResult(new UpdateBookingResponse 
-                        { 
-                            Success = false, 
-                            Message = $"SubService with ID {updateRequest.SubServiceId} not found" 
-                        });
+                        return new BadRequestObjectResult("Could not find sub-service");
                     }
                     
                     booking.SubServiceId = updateRequest.SubServiceId;
@@ -172,14 +156,7 @@ namespace Justloccit.Function
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing UpdateBooking request");
-                return new ObjectResult(new UpdateBookingResponse 
-                { 
-                    Success = false, 
-                    Message = "An error occurred while updating the booking" 
-                })
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError
-                };
+                return new BadRequestObjectResult("An error occurred while updating the booking");
             }
         }
         

@@ -52,6 +52,15 @@ namespace UpdateBooking.Function.Models
 
         [JsonProperty("notes")]
         public string Notes { get; set; } = string.Empty;
+
+        [JsonProperty("isPaid")]
+        public bool IsPaid { get; set; }
+
+        [JsonProperty("customer")]
+        public virtual CustomerModel? Customer { get; set; }
+
+        [JsonProperty("employee")]
+        public virtual Employee? Employee { get; set; }
     }
     public enum BookingStatus
     {
