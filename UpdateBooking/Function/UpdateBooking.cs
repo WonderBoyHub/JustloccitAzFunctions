@@ -49,7 +49,7 @@ namespace Justloccit.Function
                 }
                 
                 // Get the existing booking
-                var booking = await _cosmosDbService.GetItemAsync<BookingModel>(updateRequest.Id, updateRequest.Id);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>("Bookings", updateRequest.Id, updateRequest.CustomerId);
                 if (booking == null)
                 {
                     return new BadRequestObjectResult("Booking not found");
@@ -64,7 +64,7 @@ namespace Justloccit.Function
                 // Update customer if provided
                 if (!string.IsNullOrEmpty(updateRequest.CustomerId) && updateRequest.CustomerId != booking.CustomerId)
                 {
-                    var customer = await _cosmosDbService.GetItemAsync<dynamic>("Customers", updateRequest.CustomerId);
+                    var customer = await _cosmosDbService.GetItemAsync<dynamic>("Customers", updateRequest.CustomerId, updateRequest.CustomerEmail);
                     if (customer == null)
                     {
                         return new BadRequestObjectResult("Could not find customer");
@@ -80,7 +80,7 @@ namespace Justloccit.Function
                 // Update sub-service if provided
                 if (!string.IsNullOrEmpty(updateRequest.SubServiceId) && updateRequest.SubServiceId != booking.SubServiceId)
                 {
-                    var subService = await _cosmosDbService.GetItemAsync<dynamic>("SubServices", updateRequest.SubServiceId);
+                    var subService = await _cosmosDbService.GetItemAsync<dynamic>("SubServices", updateRequest.SubServiceId, updateRequest.ServiceId);
                     if (subService == null)
                     {
                         return new BadRequestObjectResult("Could not find sub-service");
@@ -123,7 +123,7 @@ namespace Justloccit.Function
                 booking.UpdatedAt = DateTime.UtcNow;
                 
                 // Update the booking in Cosmos DB
-                var updatedBooking = await _cosmosDbService.UpdateItemAsync("Bookings", booking, booking.Id);
+                var updatedBooking = await _cosmosDbService.UpdateItemAsync("Bookings", booking, booking.Id, booking.CustomerId);
                 
                 _logger.LogInformation($"Successfully updated booking {booking.Id}");
                 

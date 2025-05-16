@@ -26,46 +26,34 @@ namespace Justloccit.Function
         [Function("DeleteBooking")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "deletebooking")] HttpRequest req,
+            BookingModel booking,
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("DeleteBooking function processing request");
 
             try
             {
-                // Read and deserialize the request body
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync(cancellationToken);
-                var deleteRequest = JsonConvert.DeserializeObject<DeleteBookingRequest>(requestBody);
-                
-                if (deleteRequest == null || string.IsNullOrEmpty(deleteRequest.BookingId))
-                {
-                    return new BadRequestObjectResult(new DeleteBookingResponse 
-                    { 
-                        Success = false, 
-                        Message = "BookingId is required" 
-                    });
-                }
-                
                 // Verify the booking exists
-                var booking = await _cosmosDbService.GetItemAsync<BookingModel>(deleteRequest.BookingId, deleteRequest.BookingId);
+                var booking = await _cosmosDbService.GetItemAsync<BookingModel>("Bookings", booking.Id, booking.CustomerId);
                 if (booking == null)
                 {
                     return new NotFoundObjectResult(new DeleteBookingResponse 
                     { 
                         Success = false, 
-                        Message = $"Booking with ID {deleteRequest.BookingId} not found" 
+                        Message = $"Booking with ID {booking.Id} not found" 
                     });
                 }
                 
                 // Delete the booking
-                await _cosmosDbService.DeleteItemAsync(booking.Id, deleteRequest.BookingId);
+                await _cosmosDbService.DeleteItemAsync("Bookings", booking.Id, booking.CustomerId);
                 
-                _logger.LogInformation($"Successfully deleted booking {deleteRequest.BookingId}");
+                _logger.LogInformation($"Successfully deleted booking {booking.Id}");
                 
                 // Return success response
                 return new OkObjectResult(new DeleteBookingResponse
                 { 
                     Success = true,
-                    BookingId = deleteRequest.BookingId,
+                    BookingId = booking.Id,
                     Message = "Booking deleted successfully"
                 });
             }

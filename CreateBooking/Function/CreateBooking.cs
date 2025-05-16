@@ -67,7 +67,7 @@ namespace Justloccit.Function
                 UpdatedAt      = DateTime.UtcNow
             };
 
-            await _cosmos.CreateItemAsync("Bookings", booking, booking.Id);
+            await _cosmos.CreateItemAsync("Bookings", booking, booking.CustomerId);
 
             _logger.LogInformation("Booking {BookingId} created", booking.Id);
 
@@ -116,7 +116,7 @@ namespace Justloccit.Function
                 UpdatedAt = DateTime.UtcNow
             };
 
-            await _cosmos.CreateItemAsync("Customers", customer, customer.Id);
+            await _cosmos.CreateItemAsync("Customers", customer, customer.Email);
             dto.CustomerId = id; // propagate back
             return customer;
         }

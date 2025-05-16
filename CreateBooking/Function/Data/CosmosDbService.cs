@@ -39,12 +39,12 @@ namespace CreateBooking.Function.Data
             _logger.LogInformation("CosmosDbService initialized with containers: {Containers}", string.Join(", ", _containers.Keys));
         }
 
-        public async Task<T?> GetItemAsync<T>(string containerName, string id)
+        public async Task<T?> GetItemAsync<T>(string containerName, string id, string? partitionKey)
         {
             try
             {
                 var container = _containers[containerName];
-                var response = await container.ReadItemAsync<T>(id, new PartitionKey(id));
+                var response = await container.ReadItemAsync<T>(id, new PartitionKey(partitionKey));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -82,51 +82,17 @@ namespace CreateBooking.Function.Data
             }
         }
 
-        public async Task<T> CreateItemAsync<T>(string containerName, T item, string id)
+        public async Task<T> CreateItemAsync<T>(string containerName, T item, string id, string? partitionKey)
         {
             try
             {
                 var container = _containers[containerName];
-                var response = await container.CreateItemAsync(item, new PartitionKey(id));
+                var response = await container.CreateItemAsync(item, new PartitionKey(partitionKey));
                 return response.Resource;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating item with ID {Id} in container {Container}", id, containerName);
-                throw;
-            }
-        }
-
-        public async Task<T> UpdateItemAsync<T>(string containerName, T item, string id)
-        {
-            try
-            {
-                var container = _containers[containerName];
-                var response = await container.ReplaceItemAsync(item, id, new PartitionKey(id));
-                return response.Resource;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating item with ID {Id} in container {Container}", id, containerName);
-                throw;
-            }
-        }
-
-        public async Task DeleteItemAsync(string containerName, string id)
-        {
-            try
-            {
-                var container = _containers[containerName];
-                await container.DeleteItemAsync<object>(id, new PartitionKey(id));
-            }
-            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                _logger.LogWarning("Attempted to delete non-existent item with ID {Id} from container {Container}", id, containerName);
-                // Item doesn't exist, so deletion is effectively complete
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting item with ID {Id} from container {Container}", id, containerName);
                 throw;
             }
         }

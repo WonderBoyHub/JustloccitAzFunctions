@@ -31,12 +31,12 @@ namespace DeleteBooking.Function.Data
             _logger.LogInformation("CosmosDbService initialized with containers: {Containers}", string.Join(", ", _containers.Keys));
         }
 
-        public async Task<T?> GetItemAsync<T>(string containerName, string id)
+        public async Task<T?> GetItemAsync<T>(string containerName, string id, string? partitionKey)
         {
             try
             {
                 var container = _containers[containerName];
-                var response = await container.ReadItemAsync<T>(id, new PartitionKey(id));
+                var response = await container.ReadItemAsync<T>(id, new PartitionKey(partitionKey));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -50,12 +50,12 @@ namespace DeleteBooking.Function.Data
             }
         }
 
-        public async Task DeleteItemAsync(string containerName, string id)
+        public async Task DeleteItemAsync(string containerName, string id, string? partitionKey)
         {
             try
             {
                 var container = _containers[containerName];
-                await container.DeleteItemAsync<object>(id, new PartitionKey(id));
+                await container.DeleteItemAsync<object>(id, new PartitionKey(partitionKey));
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
